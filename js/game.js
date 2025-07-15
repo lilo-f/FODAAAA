@@ -6,7 +6,8 @@ class RavenGame {
         this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
          this.worldLimit = 3000;
         console.log("Estado inicial do AudioContext:", this.audioContext.state);
-        
+         this.updateUserAvatar();
+         
 
         // Sons do jogo
         this.sounds = {
@@ -144,6 +145,23 @@ class RavenGame {
                 this.audioContext.resume();
             }
         }, { once: true });
+    }
+
+
+    // Adicione este novo método
+    updateUserAvatar() {
+        const user = JSON.parse(localStorage.getItem('ravenStudioCurrentUser'));
+        const gameUserAvatar = document.getElementById('gameUserAvatar');
+        const gameUserIcon = document.getElementById('gameUserIcon');
+
+        if (user && user.avatar) {
+            gameUserAvatar.src = user.avatar;
+            gameUserAvatar.style.display = 'block';
+            gameUserIcon.style.display = 'none';
+        } else {
+            gameUserAvatar.style.display = 'none';
+            gameUserIcon.style.display = 'block';
+        }
     }
 
  setupUI() {
@@ -691,7 +709,7 @@ hideAllMenus() {
                         obstacle.dangerous = false;
                         obstacle.defeated = true;
                         this.player.velY = -8;
-                        this.score += 50;
+                        this.score += 20;
                         this.createParticle(obstacle.x + obstacle.width/2, obstacle.y, '#fbbf24', 'defeat');
                         
                         if (this.sounds.enemyDefeat) this.sounds.enemyDefeat();
@@ -1429,11 +1447,23 @@ hideAllMenus() {
     }
 
     /* ========== GERENCIAMENTO DE NÍVEL ========== */
-   levelComplete() {
+levelComplete() {
     this.gameState = 'levelComplete';
     this.hideAllMenus();
     
-    // Removemos a geração do cupom e atualizamos a mensagem
+    // Atualiza os pontos do usuário no localStorage e na sessão
+    const currentUser = JSON.parse(localStorage.getItem('ravenStudioCurrentUser'));
+    if (currentUser) {
+        // Adiciona os pontos ao usuário atual
+        currentUser.points = (currentUser.points || 0) + this.score;
+        localStorage.setItem('ravenStudioCurrentUser', JSON.stringify(currentUser));
+        
+        // Se estiver usando uma sessão global também
+        if (window.userSession && window.userSession.isLoggedIn()) {
+            window.userSession.addPoints(this.score);
+        }
+    }
+    
     const pointsElement = document.getElementById('pointsEarned');
     if (pointsElement) pointsElement.textContent = this.score;
     
@@ -1449,7 +1479,7 @@ nextLevel() {
     clearTimeout(this.musicTimer);
     
     this.level++;
-    this.score += this.lives * 20; // Alterado de 50 para 20 (ou o valor que preferir)
+
     
     this.resetGameState();
     this.resetPlayer();
@@ -1460,23 +1490,30 @@ nextLevel() {
     this.playBackgroundMusic();
 }
 
-    gameOver() {
-        this.gameState = 'gameOver';
-        this.hideAllMenus();
-        
-        const finalScore = document.getElementById('finalScore');
-        if (finalScore) finalScore.textContent = this.score;
-        
-        const gameOverMenu = document.getElementById('gameOverMenu');
-        if (gameOverMenu) gameOverMenu.classList.add('active');
-        
-        if (this.sounds.gameOver) this.sounds.gameOver();
-        this.stopBackgroundMusic();
-        
-        this.score = 0;
-        this.level = 1;
-        this.lives = 3;
+   gameOver() {
+    this.gameState = 'gameOver';
+    this.hideAllMenus();
+    
+    // Salva os pontos mesmo no game over
+    const currentUser = JSON.parse(localStorage.getItem('ravenStudioCurrentUser'));
+    if (currentUser) {
+        currentUser.points = (currentUser.points || 0) + this.score;
+        localStorage.setItem('ravenStudioCurrentUser', JSON.stringify(currentUser));
     }
+    
+    const finalScore = document.getElementById('finalScore');
+    if (finalScore) finalScore.textContent = this.score;
+    
+    const gameOverMenu = document.getElementById('gameOverMenu');
+    if (gameOverMenu) gameOverMenu.classList.add('active');
+    
+    if (this.sounds.gameOver) this.sounds.gameOver();
+    this.stopBackgroundMusic();
+    
+    this.score = 0;
+    this.level = 1;
+    this.lives = 3;
+}
 
     /* ========== CUPONS E ALERTAS ========== */
     copyCouponCode() {
