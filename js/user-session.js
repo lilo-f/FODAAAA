@@ -1,12 +1,15 @@
 class UserSession {
-    constructor() {
+   constructor() {
         this.currentUser = JSON.parse(localStorage.getItem('ravenStudioCurrentUser')) || null;
         this.init();
     }
-
     init() {
         this.updateNavbar();
+        this.updateGameNavbar(); // Adicione esta linha
     }
+
+
+
 
     login(userData) {
         // Carrega os dados completos do usuário do banco de dados local
@@ -22,6 +25,34 @@ class UserSession {
         this.updateNavbar();
         this.showNotification('Login realizado com sucesso!');
         return completeUser;
+    }
+
+
+
+    
+    // Adicione este novo método
+    updateGameNavbar() {
+        const gameUserLink = document.getElementById('gameUserLink');
+        const gameUserAvatar = document.getElementById('gameUserAvatar');
+        const gameUserIcon = document.getElementById('gameUserIcon');
+
+        if (gameUserLink && gameUserAvatar && gameUserIcon) {
+            if (this.isLoggedIn()) {
+                if (this.currentUser.avatar) {
+                    gameUserAvatar.src = this.currentUser.avatar;
+                    gameUserAvatar.style.display = 'block';
+                    gameUserIcon.style.display = 'none';
+                } else {
+                    gameUserAvatar.style.display = 'none';
+                    gameUserIcon.style.display = 'block';
+                }
+                gameUserLink.href = '/pages/user.html';
+            } else {
+                gameUserAvatar.style.display = 'none';
+                gameUserIcon.style.display = 'block';
+                gameUserLink.href = '/pages/login.html';
+            }
+        }
     }
 
     addToWishlist(productId) {
