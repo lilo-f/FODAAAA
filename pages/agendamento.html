@@ -1595,25 +1595,43 @@
             document.getElementById('prev-step-idea-budget').addEventListener('click', () => {
                 showStep(currentStep - 1);
             });
-            document.getElementById('submit-appointment-btn').addEventListener('click', (e) => {
-                e.preventDefault(); // Previne o envio padrão do formulário
-                if (validateStep(formSteps[currentStep])) {
-                    // Simulação da finalização do agendamento
-                    // Em um aplicativo real, aqui você enviaria `appointmentData` para um backend
-                    console.log('Agendamento Finalizado:', appointmentData);
-
-                    // Opcional: Armazenar no localStorage para demonstração
-                    let appointments = JSON.parse(localStorage.getItem('ravenStudioAppointments')) || [];
-                    appointments.push(appointmentData);
-                    localStorage.setItem('ravenStudioAppointments', JSON.stringify(appointments));
-
-                    // Mostrar mensagem de confirmação e esconder o formulário
-                    document.querySelectorAll('.form-step').forEach(step => step.style.display = 'none');
-                    document.getElementById('progressBar').style.display = 'none'; // Hide progress bar
-                    document.getElementById('confirmation-message').style.display = 'flex'; // Show confirmation
-                    updateProgressBar(); // Update progress bar to 100%
+           document.getElementById('submit-appointment-btn').addEventListener('click', (e) => {
+    e.preventDefault();
+    if (validateStep(formSteps[currentStep])) {
+        // Adiciona a data/hora atual ao agendamento
+        appointmentData.createdAt = new Date().toISOString();
+        appointmentData.status = "Pendente"; // Status inicial
+        
+        // Salva no localStorage
+        let appointments = JSON.parse(localStorage.getItem('ravenStudioAppointments')) || [];
+        appointments.push(appointmentData);
+        localStorage.setItem('ravenStudioAppointments', JSON.stringify(appointments));
+        
+        // Atualiza a sessão do usuário
+        if (window.userSession && window.userSession.currentUser) {
+            const users = JSON.parse(localStorage.getItem('ravenStudioUsers')) || [];
+            const userIndex = users.findIndex(u => u.email === window.userSession.currentUser.email);
+            
+            if (userIndex !== -1) {
+                if (!users[userIndex].appointments) {
+                    users[userIndex].appointments = [];
                 }
-            });
+                users[userIndex].appointments.push(appointmentData);
+                localStorage.setItem('ravenStudioUsers', JSON.stringify(users));
+                
+                // Atualiza o usuário atual
+                window.userSession.currentUser.appointments = users[userIndex].appointments;
+                localStorage.setItem('ravenStudioCurrentUser', JSON.stringify(window.userSession.currentUser));
+            }
+        }
+
+        // Mostrar mensagem de confirmação
+        document.querySelectorAll('.form-step').forEach(step => step.style.display = 'none');
+        document.getElementById('progressBar').style.display = 'none';
+        document.getElementById('confirmation-message').style.display = 'flex';
+        updateProgressBar();
+    }
+});
 
             // Exibição do valor do orçamento
             const budgetRange = document.getElementById('budget-range');
