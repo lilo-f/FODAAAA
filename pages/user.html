@@ -11,6 +11,113 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="/css/style.css">
     <style>
+        /* Estilos para a seção de agendamentos */
+.appointment-card {
+    background: rgba(30, 30, 30, 0.8);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    border: 1px solid rgba(59, 130, 246, 0.3);
+    transition: all 0.3s ease;
+}
+
+.appointment-card:hover {
+    border-color: #3b82f6;
+    box-shadow: 0 5px 15px rgba(59, 130, 246, 0.2);
+}
+
+.appointment-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid rgba(59, 130, 246, 0.2);
+}
+
+.appointment-id {
+    font-family: 'Teko', sans-serif;
+    font-size: 1.3rem;
+    color: white;
+}
+
+.appointment-status {
+    padding: 0.3rem 1rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.appointment-details {
+    display: grid;
+    grid-template-columns: 80px 1fr;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.appointment-icon {
+    width: 80px;
+    height: 80px;
+    background: rgba(59, 130, 246, 0.2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    color: #3b82f6;
+}
+
+.appointment-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.appointment-artist {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 1.2rem;
+    color: white;
+    margin-bottom: 0.5rem;
+}
+
+.appointment-style {
+    font-size: 0.9rem;
+    color: #d1d5db;
+    margin-bottom: 0.5rem;
+}
+
+.appointment-budget {
+    font-family: 'Bebas Neue', cursive;
+    font-size: 1.2rem;
+    color: #3b82f6;
+}
+
+.appointment-actions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 1rem;
+}
+        /* Adicione isso ao seu CSS existente */
+.logout-btn {
+    background: none;
+    border: none;
+    color: #d1d5db;
+    font-family: 'Orbitron', sans-serif;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.logout-btn:hover {
+    background: rgba(239, 68, 68, 0.1);
+    color: #ef4444;
+    border-left: 3px solid #ef4444;
+}
         * {
             margin: 0;
             padding: 0;
@@ -139,6 +246,17 @@
 
         .stat-item {
             text-align: center;
+        }
+
+        .user-points {
+            text-align: center;
+        }
+
+        .points-display {
+            font-family: 'Bebas Neue', cursive;
+            font-size: 2rem;
+            color: #3b82f6;
+            display: block;
         }
 
         .stat-number {
@@ -452,51 +570,60 @@
     <main class="profile-main">
         <header class="profile-header">
             <div class="profile-avatar" onclick="goToAvatarCreator()">
-    <img id="user-avatar" src="" alt="User Avatar" style="display: none;">
-    <i id="default-avatar-icon" class="fas fa-user"></i>
-    <div class="avatar-overlay">
-        <i class="fas fa-camera"></i> <!-- Alterado de fa-pencil-alt para fa-camera -->
-    </div>
-</div>
+                <img id="user-avatar" src="" alt="User Avatar" style="display: none;">
+                <i id="default-avatar-icon" class="fas fa-user"></i>
+                <div class="avatar-overlay">
+                    <i class="fas fa-camera"></i>
+                </div>
+            </div>
             <div class="profile-info">
                 <h1 id="user-name">Carregando...</h1>
                 <p id="user-email">Carregando...</p>
                 <p><i class="fas fa-calendar"></i> <span id="join-date">Membro desde: carregando...</span></p>
             </div>
-            <div class="profile-stats">
-                <div class="stat-item">
-                    <span class="stat-number" id="total-orders">0</span>
-                    <span class="stat-label">Pedidos</span>
-                </div>
-                <div class="stat-item">
-                    <span class="stat-number" id="loyalty-points">1250</span>
-                    <span class="stat-label">Pontos</span>
-                </div>
-                <div class="stat-item">
-                    <span class="stat-number" id="wishlist-count">0</span>
-                    <span class="stat-label">Favoritos</span>
-                </div>
-            </div>
+           <div class="profile-stats">
+    <div class="stat-item">
+        <span class="stat-number" id="total-orders">0</span>
+        <span class="stat-label">Pedidos</span>
+    </div>
+    <div class="stat-item">
+        <span class="stat-number" id="appointments-count">0</span>
+        <span class="stat-label">Agendamentos</span>
+    </div>
+    <div class="user-points">
+        <span class="stat-number" id="userPointsDisplay">0</span>
+        <span class="stat-label">Pontos</span>
+    </div>
+    <div class="stat-item">
+        <span class="stat-number" id="wishlist-count">0</span>
+        <span class="stat-label">Favoritos</span>
+    </div>
+</div>
         </header>
 
-        <button type="button" class="btn-primary" onclick="userSession.logout()" style="background: #ef4444; margin-top: 1rem;">
-            <i class="fas fa-sign-out-alt"></i> Sair
-        </button>
+       
 
         <div class="profile-content">
             <nav class="profile-sidebar">
-                <ul class="sidebar-menu">
-                    <li><a href="#" class="menu-link active" data-section="orders">
-                        <i class="fas fa-shopping-bag"></i> Meus Pedidos
-                    </a></li>
-                    <li><a href="#" class="menu-link" data-section="wishlist">
-                        <i class="fas fa-heart"></i> Lista de Desejos
-                    </a></li>
-                    <li><a href="#" class="menu-link" data-section="settings">
-                        <i class="fas fa-cog"></i> Configurações
-                    </a></li>
-                </ul>
-            </nav>
+    <ul class="sidebar-menu">
+        <li><a href="#" class="menu-link active" data-section="orders">
+            <i class="fas fa-shopping-bag"></i> Meus Pedidos
+        </a></li>
+        <li><a href="#" class="menu-link" data-section="wishlist">
+            <i class="fas fa-heart"></i> Lista de Desejos
+        </a></li>
+        <!-- Adicione este item ao menu de navegação -->
+<li><a href="#" class="menu-link" data-section="appointments">
+    <i class="fas fa-calendar-alt"></i> Meus Agendamentos
+</a></li>
+
+        <li>
+            <button class="menu-link logout-btn" onclick="userSession.logout()" style="width: 100%; text-align: left;">
+                <i class="fas fa-sign-out-alt"></i> Sair
+            </button>
+        </li>
+    </ul>
+</nav>
 
             <div class="profile-main-content">
                 <section id="orders-section" class="section active">
@@ -512,11 +639,15 @@
                         <!-- Lista de desejos será carregada aqui -->
                     </div>
                 </section>
-
-                <section id="settings-section" class="section">
-                    <h2 class="section-title">Configurações</h2>
-                    <p style="color: #d1d5db;">Opções de configuração do perfil.</p>
-                </section>
+                
+<!-- Adicione esta seção no conteúdo principal -->
+<section id="appointments-section" class="section">
+    <h2 class="section-title">Meus Agendamentos</h2>
+    <div id="appointments-container">
+        <!-- Agendamentos serão carregados aqui -->
+    </div>
+</section>
+                
             </div>
         </div>
     </main>
@@ -597,12 +728,12 @@
     <script src="/js/user-session.js"></script>
     <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
     <script>
-          // Função para redirecionar para o criador de avatar
-    function goToAvatarCreator() {
-        window.location.href = 'avatar.html';
-    }
+        // Função para redirecionar para o criador de avatar
+        function goToAvatarCreator() {
+            window.location.href = 'avatar.html';
+        }
 
-            // Inicializar partículas
+        // Inicializar partículas
         particlesJS('particles-js', {
             particles: {
                 number: { value: 60, density: { enable: true, value_area: 800 } },
@@ -637,7 +768,6 @@
         ];
 
         // Classe para gerenciar o perfil do usuário
-        // Classe para gerenciar o perfil do usuário
         class UserProfile {
             constructor() {
                 this.userSession = window.userSession;
@@ -646,14 +776,16 @@
                 this.loadProfileData();
                 this.setupEventListeners();
                 this.renderWishlist();
-                
+                this.displayUserPoints();
             }
 
             loadProfileData() {
                 if (this.user) {
                     // Atualizado para mostrar nome, telefone e data de cadastro corretamente
                     document.getElementById('user-name').textContent = this.user.name || 'Usuário';
-                    
+                       // Carrega agendamentos
+        this.user.appointments = JSON.parse(localStorage.getItem('ravenStudioAppointments')) || [];
+        
                     // Mostra email e telefone
                     const userEmail = this.user.email || 'N/A';
                     const userPhone = this.user.phone ? formatPhoneNumber(this.user.phone) : 'N/A';
@@ -671,34 +803,44 @@
                     this.user.orders = JSON.parse(localStorage.getItem('ravenStudioOrders')) || [];
                     document.getElementById('total-orders').textContent = this.user.orders.length;
                     
-                    document.getElementById('loyalty-points').textContent = this.user.loyaltyPoints || 0;
                     document.getElementById('wishlist-count').textContent = this.userSession.getWishlist().length;
-                    loadUserAvatar();
+                          // Atualiza contagens
+        document.getElementById('total-orders').textContent = this.user.orders?.length || 0;
+        document.getElementById('wishlist-count').textContent = this.user.wishlist?.length || 0;
+        document.getElementById('appointments-count').textContent = this.user.appointments?.length || 0;
+        
+        loadUserAvatar();
+
                 } else {
                     // Mensagem para visitantes
                     document.getElementById('user-name').textContent = 'Visitante';
                     document.getElementById('user-email').innerHTML = 'Faça login para ver seu perfil.';
                     document.getElementById('join-date').textContent = 'Membro desde: N/A';
                     document.getElementById('total-orders').textContent = '0';
-                    document.getElementById('loyalty-points').textContent = '0';
                     document.getElementById('wishlist-count').textContent = '0';
                 }
                 this.renderOrders();
             }
-            
 
+            displayUserPoints() {
+                const currentUser = JSON.parse(localStorage.getItem('ravenStudioCurrentUser'));
+                if (currentUser) {
+                    document.getElementById('userPointsDisplay').textContent = currentUser.points || '0';
+                }
+            }
 
+            updateUI() {
+                document.getElementById('user-name').textContent = this.user.name;
+                document.getElementById('total-orders').textContent = this.user.orders?.length || 0;
+                document.getElementById('wishlist-count').textContent = this.user.wishlist?.length || 0;
+                this.displayUserPoints();
+                
+                // Renderiza pedidos e favoritos
+                this.renderOrders();
+                this.renderWishlist();
+            }
 
-    updateUI() {
-        document.getElementById('user-name').textContent = this.user.name;
-        document.getElementById('total-orders').textContent = this.user.orders?.length || 0;
-        document.getElementById('wishlist-count').textContent = this.user.wishlist?.length || 0;
-        
-        // Renderiza pedidos e favoritos
-        this.renderOrders();
-        this.renderWishlist();
-    }
-          renderOrders() {
+            renderOrders() {
                 const ordersContainer = document.getElementById('orders-container');
                 ordersContainer.innerHTML = ''; // Limpa o container
 
@@ -718,7 +860,6 @@
                     return;
                 }
 
-             
                 const ordersHtml = userOrders.map(order => {
                     const statusClass = order.status.toLowerCase().replace(' ', '-');
                     const orderDate = new Date(order.date).toLocaleDateString('pt-BR');
@@ -742,7 +883,7 @@
                         `;
                     }).join('');
 
-                     return `
+                    return `
                         <div class="order-card">
                             <div class="order-header">
                                 <div class="order-id">Pedido #${order.id}</div>
@@ -757,9 +898,108 @@
                     `;
                 }).join('');
 
-               
                 ordersContainer.innerHTML = ordersHtml;
             }
+            renderAppointments() {
+    const container = document.getElementById('appointments-container');
+    container.innerHTML = '';
+    
+    const appointments = this.user?.appointments || [];
+    
+    if (appointments.length === 0) {
+        container.innerHTML = `
+            <div style="text-align: center; padding: 2rem;">
+                <h3 style="color: white; font-size: 1.8rem; margin-bottom: 1rem;">Nenhum agendamento encontrado</h3>
+                <p style="color: #d1d5db; margin-bottom: 2rem;">Agende sua sessão com nossos artistas!</p>
+                <button class="btn-primary" onclick="window.location.href='agendamento.html'">
+                    <i class="fas fa-calendar-plus"></i> NOVO AGENDAMENTO
+                </button>
+            </div>
+        `;
+        return;
+    }
+    
+    const html = appointments.map(appointment => {
+        const date = new Date(appointment.preferredDate1);
+        const formattedDate = date.toLocaleDateString('pt-BR', { 
+            day: '2-digit', 
+            month: 'long', 
+            year: 'numeric' 
+        });
+        
+        return `
+            <div class="order-card">
+                <div class="order-header">
+                    <div class="order-id">Agendamento #${appointment.createdAt.substring(0, 8)}</div>
+                    <span class="order-status status-processing">${appointment.status}</span>
+                </div>
+                <div class="order-date">Data: ${formattedDate} às ${appointment.preferredTime1}</div>
+                <div class="order-items">
+                    <div class="order-item">
+                        <div style="width: 60px; height: 60px; background: #3b82f6; 
+                            border-radius: 8px; display: flex; align-items: center; 
+                            justify-content: center; color: #000; font-size: 1.5rem;">
+                            <i class="fas fa-calendar-check"></i>
+                        </div>
+                        <div class="order-item-info">
+                            <div class="order-item-name">Tatuagem com ${appointment.artistName}</div>
+                            <div class="order-item-quantity">Estilo: ${this.getStyleName(appointment.tattooStyle)}</div>
+                            <div class="order-item-price">Orçamento: R$${parseInt(appointment.budget).toLocaleString('pt-BR')}</div>
+                        </div>
+                    </div>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin-top: 1rem;">
+                    <button class="btn-small" onclick="window.userProfile.cancelAppointment('${appointment.createdAt}')">
+                        <i class="fas fa-times-circle"></i> Cancelar
+                    </button>
+                    <button class="btn-small" style="background: rgba(34, 197, 94, 0.1); 
+                        border-color: #22c55e; color: #22c55e;">
+                        <i class="fas fa-comment"></i> Mensagem
+                    </button>
+                </div>
+            </div>
+        `;
+    }).join('');
+    
+    container.innerHTML = html;
+}
+
+getStyleName(styleKey) {
+    const styles = {
+        'realism': 'Realismo',
+        'blackwork': 'Blackwork',
+        'geometric': 'Geométrico',
+        'portrait': 'Retratos',
+        'minimalist': 'Minimalista',
+        'tradicional': 'Tradicional',
+        'oriental': 'Oriental',
+        'watercolor': 'Aquarela',
+        'other': 'Outro'
+    };
+    return styles[styleKey] || styleKey;
+}
+
+cancelAppointment(appointmentId) {
+    if (!confirm('Tem certeza que deseja cancelar este agendamento?')) return;
+    
+    const users = JSON.parse(localStorage.getItem('ravenStudioUsers')) || [];
+    const userIndex = users.findIndex(u => u.email === this.user.email);
+    
+    if (userIndex !== -1) {
+        users[userIndex].appointments = users[userIndex].appointments.filter(
+            app => app.createdAt !== appointmentId
+        );
+        localStorage.setItem('ravenStudioUsers', JSON.stringify(users));
+        
+        // Atualiza o usuário atual
+        this.user.appointments = users[userIndex].appointments;
+        localStorage.setItem('ravenStudioCurrentUser', JSON.stringify(this.user));
+        
+        // Atualiza a lista de agendamentos
+        this.renderAppointments();
+        this.userSession.showNotification('Agendamento cancelado com sucesso!');
+    }
+}
 
             renderWishlist() {
                 const wishlistContainer = document.getElementById('wishlist-container');
@@ -808,23 +1048,28 @@
                 });
             }
 
-            setupEventListeners() {
-                document.querySelectorAll('.sidebar-menu .menu-link').forEach(link => {
-                    link.addEventListener('click', (event) => {
-                        event.preventDefault();
-                        document.querySelectorAll('.sidebar-menu .menu-link').forEach(item => item.classList.remove('active'));
-                        event.currentTarget.classList.add('active');
+         
 
-                        document.querySelectorAll('.section').forEach(section => section.classList.remove('active'));
-                        const targetSectionId = event.currentTarget.dataset.section + '-section';
-                        document.getElementById(targetSectionId).classList.add('active');
+           setupEventListeners() {
+    document.querySelectorAll('.sidebar-menu .menu-link').forEach(link => {
+        link.addEventListener('click', (event) => {
+            event.preventDefault();
+            document.querySelectorAll('.sidebar-menu .menu-link').forEach(item => item.classList.remove('active'));
+            event.currentTarget.classList.add('active');
 
-                        if (targetSectionId === 'wishlist-section') {
-                            this.renderWishlist(); // Ensure wishlist is fresh when navigating to it
-                        }
-                    });
-                });
+            document.querySelectorAll('.section').forEach(section => section.classList.remove('active'));
+            const targetSectionId = event.currentTarget.dataset.section + '-section';
+            document.getElementById(targetSectionId).classList.add('active');
+
+            // Carrega os dados específicos da seção quando ativada
+            if (targetSectionId === 'wishlist-section') {
+                this.renderWishlist();
+            } else if (targetSectionId === 'appointments-section') {
+                this.renderAppointments();
             }
+        });
+    });
+}
 
             // Mock data for orders if user is not logged in or has no orders
             getMockOrders() {
